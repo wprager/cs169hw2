@@ -7,9 +7,17 @@ class MoviesController < ApplicationController
   end
 
   def index
-    value = params[:clicked]
-    @movies = Movie.order(value).all
-    @sort = value
+    @all_ratings = Movie.allratings
+    sortby = params[:sortby]
+    @sort = sortby
+    if params[:ratings] != nil
+      selected_ratings = params[:ratings].keys
+      @movies = Movie.order(sortby).where(rating: selected_ratings)
+    else
+      selected_ratings = @all_ratings
+      @movies = Movie.order(sortby).all
+    end
+    @checked = selected_ratings
   end
 
   def new
