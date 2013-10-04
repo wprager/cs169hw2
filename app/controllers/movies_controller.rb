@@ -8,15 +8,21 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.allratings
-    sortby = params[:sortby]
-    @sort = sortby
+    if params[:sortby] == nil
+      params[:sortby] = session[:sortby]
+    end
+    @sort = params[:sortby]
+    session[:sortby] = @sort
+    if params[:ratings] == nil
+      params[:ratings] = session[:ratings]
+    end
     if params[:ratings] != nil
       selected_ratings = params[:ratings].keys
-      @movies = Movie.order(sortby).where(rating: selected_ratings)
     else
       selected_ratings = @all_ratings
-      @movies = Movie.order(sortby).all
     end
+    session[:ratings] = params[:ratings]
+    @movies = Movie.order(@sort).where(rating: selected_ratings)
     @checked = selected_ratings
   end
 
